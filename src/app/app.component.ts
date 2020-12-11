@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Room } from './room/room.model';
 
 @Component({
@@ -10,27 +11,43 @@ export class AppComponent {
 
   rooms: Room[];
   roomToUpdateIndex: number;
+  roomForm: FormGroup;
 
-  constructor() {
+  constructor(fb: FormBuilder) {
     this.rooms = [
       new Room('101', 120),
       new Room('102', 99),
       new Room('103', 150),
     ];
     this.roomToUpdateIndex = -1;
+    this.roomForm = fb.group({
+      'roomNum':  ['', Validators.required],
+      'price': [0, Validators.required]
+    });
+ 
+    // Posto je samo room num stirng, pratim stanje njega i ispisujem poruku
+    this.roomForm.valueChanges.subscribe(
+      (form: any) => {
+        if(form.roomNum.length < 6) {
+          console.log("Duzina broja sobe je manja od 6");
+        }
+      }
+    );
+
   }
 
-  addRoom(roomNumber: HTMLInputElement, price: HTMLInputElement): boolean {
-    if (this.roomToUpdateIndex === -1) {
-      this.rooms.push(new Room(roomNumber.value, price.valueAsNumber));
-    } else {
-      this.rooms[this.roomToUpdateIndex].roomNumber = roomNumber.value;
-      this.rooms[this.roomToUpdateIndex].roomPrice = price.valueAsNumber;
+  addRoom(){
+    if (this.roomForm.valid) {
+      if (this.roomToUpdateIndex === -1) {
+        this.rooms.push(new Room(this.roomForm.controls['roomNum'].value, this.roomForm.controls['price'].value));
+      } else {
+        this.rooms[this.roomToUpdateIndex].roomNumber = this.roomForm.controls['roomNum'].value;
+        this.rooms[this.roomToUpdateIndex].roomPrice = this.roomForm.controls['price'].value;
+      }
+      this.roomForm.reset();
+      this.roomToUpdateIndex = -1;
+      return false;
     }
-    roomNumber.value = '';
-    price.valueAsNumber = 0;
-    this.roomToUpdateIndex = -1;
-    return false;
   }
 
   deleteRoom(room: Room) {
@@ -44,8 +61,8 @@ export class AppComponent {
     (<HTMLInputElement>document.getElementById('roomNum')).value = this.rooms[index].roomNumber;
     (<HTMLInputElement>document.getElementById('price')).valueAsNumber = this.rooms[index].roomPrice;
     this.roomToUpdateIndex = index;
-    // this.videos[index].title = this._generateString(6);
   }
+
 
   addRoomExternal(room: Room) {
     this.rooms.push(room);

@@ -1,17 +1,20 @@
-<form class="ui large form segment">
+<form [formGroup]="roomForm" (ngSubmit)="addRoom()" class="ui large form segment"
+  [class.error]="!roomForm.valid && roomForm.touched">
   <h3 class="ui header">Add a room</h3>
 
   <div class="field">
     <label for="roomNum">Room number:</label>
-    <input name="roomNum" id="roomNum" #newRoomNum>
+    <input name="roomNum" id="roomNum" [formControl]="roomForm.controls['roomNum']">
   </div>
 
   <div class="field">
     <label for="price">Room price:</label>
-    <input name="price" id="price" type="number" #newPrice>
+    <input name="price" id="price" type="number" [formControl]="roomForm.controls['price']">
   </div>
 
-  <button (click)="addRoom(newRoomNum, newPrice)" class="ui positive right floated button">
+  <div *ngIf="!roomForm.valid" class="ui error message">Forma nije validna</div>
+
+  <button type="submit" class="ui positive right floated button">
     Save room
   </button>
   <button (click)="randomize()" class="ui negative left floated button">
@@ -26,11 +29,7 @@
     </div>
     <input [(ngModel)]="maxValue" placeholder="Maximum price">
   </div>
-  <app-room 
-  *ngFor="let room of rooms | filter: maxValue" 
-  (roomToDelete)="deleteRoom($event)"
-  (updateRoom)="updateRoom($event)"
-  (addRoom)="addRoomExternal($event)"
-  [room]="room">
+  <app-room *ngFor="let room of rooms | filter: maxValue" (roomToDelete)="deleteRoom($event)"
+    (updateRoom)="updateRoom($event)" (addRoom)="addRoomExternal($event)" [room]="room">
   </app-room>
 </div>
