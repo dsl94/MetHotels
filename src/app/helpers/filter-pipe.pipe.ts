@@ -6,8 +6,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class FilterPipePipe implements PipeTransform {
 
   transform(items: any[], maxValue: number): any[] {
-    console.log(items);
-    console.log(maxValue);
     if(!items) return [];
     if(!maxValue) return items;
     return items.filter( it => {
