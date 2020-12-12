@@ -1,3 +1,4 @@
+import { RoomService } from './../services/room.service';
 import { Room } from './room.model';
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
 
@@ -13,12 +14,19 @@ export class RoomComponent implements OnInit {
   @HostBinding('attr.class') cssClass='row';
   @Input() room: Room;
 
-  constructor() {
+  constructor(private roomService: RoomService) {
     this.roomToDelete = new EventEmitter();
     this.updateRoom = new EventEmitter();
    }
 
   ngOnInit(): void {
+  }
+
+  // racunanje cene
+  calculatePriceForNights(numberOfNights: number): number {
+    let price = this.roomService.getPrice(numberOfNights, this.room.roomPrice);
+    console.log(price);
+    return price;
   }
 
   public deleteRoom(): void {
