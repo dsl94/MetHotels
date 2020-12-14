@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { AppState } from './app.state';
 import { Room } from './room/room.model';
 
 @Component({
@@ -13,12 +15,20 @@ export class AppComponent {
   roomToUpdateIndex: number;
   roomForm: FormGroup;
 
-  constructor(fb: FormBuilder) {
+  constructor(fb: FormBuilder, private store: Store<AppState>) {
     this.rooms = [
       new Room('101', 120),
       new Room('102', 99),
       new Room('103', 150),
     ];
+
+    this.rooms.forEach(element => {
+      this.store.dispatch({
+        type: 'ADD_ROOM',
+        payload: element
+      });
+    });
+   
     this.roomToUpdateIndex = -1;
     this.roomForm = fb.group({
       'roomNum':  ['', Validators.required],
@@ -39,7 +49,12 @@ export class AppComponent {
   addRoom(){
     if (this.roomForm.valid) {
       if (this.roomToUpdateIndex === -1) {
-        this.rooms.push(new Room(this.roomForm.controls['roomNum'].value, this.roomForm.controls['price'].value));
+        let room = new Room(this.roomForm.controls['roomNum'].value, this.roomForm.controls['price'].value);
+        this.rooms.push();
+        this.store.dispatch({
+          type: 'ADD_ROOM',
+          payload: room
+        });
       } else {
         this.rooms[this.roomToUpdateIndex].roomNumber = this.roomForm.controls['roomNum'].value;
         this.rooms[this.roomToUpdateIndex].roomPrice = this.roomForm.controls['price'].value;
