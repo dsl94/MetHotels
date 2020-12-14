@@ -1,4 +1,5 @@
 export class Room {
+    // Profesore evo model za room koji je vec postojao
     roomNumber: string;
     roomPrice: number;
 

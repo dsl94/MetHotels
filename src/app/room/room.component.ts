@@ -9,6 +9,7 @@ import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@an
 })
 export class RoomComponent implements OnInit {
 
+  // Profesore ja vec imam view za Room kao i model tako da resenje za ovaj domaci vec postoji u okviru projekta
   @Output() roomToDelete: EventEmitter<Room>;
   @Output() updateRoom: EventEmitter<Room>;
   @HostBinding('attr.class') cssClass='row';
